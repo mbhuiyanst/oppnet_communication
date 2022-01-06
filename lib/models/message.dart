@@ -1,18 +1,18 @@
-class Message {
+class MessageModel {
   final bool sent;
   final String toId;
-  final String toUsername;
+  //final String toUsername;
   final String fromId;
-  final String fromUsername;
+  //final String fromUsername;
   final String message;
   final DateTime dateTime;
 
-  Message(
+  MessageModel(
       {required this.sent,
         required this.toId,
-        required this.toUsername,
+       // required this.toUsername,
         required this.fromId,
-        required this.fromUsername,
+        // required this.fromUsername,
         required this.message,
         required this.dateTime});
 }

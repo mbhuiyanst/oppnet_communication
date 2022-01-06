@@ -5,6 +5,9 @@ import 'package:oppnet_chat/Global/Settings.dart' as Settings;
 import 'package:oppnet_chat/Widget/ReceivedMessageWidget.dart';
 import 'package:oppnet_chat/Widget/SendedMessageWidget.dart';
 import 'package:flutter_nearby_connections/flutter_nearby_connections.dart';
+import 'package:get/get.dart';
+
+import 'models/message.dart';
 
 class ChatPageView extends StatefulWidget {
 
@@ -21,6 +24,7 @@ class _ChatPageViewState extends State<ChatPageView> {
   TextEditingController _text = new TextEditingController();
   ScrollController _scrollController = ScrollController();
   var childList = <Widget>[];
+  List<MessageModel> messages =[];
 
 
 
@@ -216,6 +220,13 @@ class _ChatPageViewState extends State<ChatPageView> {
                                   print("jjasd");
                                   widget.nearbyService.sendMessage(
                                       widget.device.deviceId, _text.text);
+                                  messages.add(MessageModel(
+                                    sent: true,
+                                    toId: widget.device.deviceId,
+                                    message: _text.text,
+                                    dateTime: DateTime.now(),
+                                      fromId: widget.device.deviceId
+                                  ));
                                   _text.clear();
                                 },
                               ),

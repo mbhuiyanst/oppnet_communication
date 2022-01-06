@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nearby_connections/flutter_nearby_connections.dart';
 import 'package:oppnet_chat/chat_screen.dart';
 import 'models/attached_device.dart';
+import 'package:get/get.dart';
 void main() {
   runApp(const MyApp());
 }
