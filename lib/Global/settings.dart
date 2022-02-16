@@ -1,4 +1,4 @@
-library samplechat.globals.settings;
+library sample.globals.settings;
 
 bool isDarkMode = false;
 //Function changeTheme;

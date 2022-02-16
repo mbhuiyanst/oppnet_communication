@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nearby_connections/flutter_nearby_connections.dart';
 import 'package:oppnet_chat/chat_screen.dart';
 import 'models/attached_device.dart';
-import 'package:get/get.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -51,7 +50,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-   // Showing application home page..............
+    // Showing application home page..............
     return Scaffold(
       appBar: AppBar(
           title: Text("Oppnet Chat Application"),
@@ -80,7 +79,6 @@ class Home extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DevicesListScreen(deviceType: DeviceType.advertiser)));
-                //Navigator.pushNamed(context, 'advertiser');
               },
               child: Container(
                 color: Colors.green,
@@ -97,8 +95,8 @@ class Home extends StatelessWidget {
     );
   }
 }
-// Advertising and Scanning , connection request and message send/receive implementation.....
 
+//Defining the Device Type.....
 enum DeviceType { advertiser, browser }
 
 class DevicesListScreen extends StatefulWidget {
@@ -126,17 +124,8 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   void initState() {
     super.initState();
     init();
-    //_getCurrentDevice();
+
   }
-
-  /*_getCurrentDevice()async{
-    if(Platform.isAndroid){
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      _currentDevice=androidInfo.model;
-    }
-
-  }*/
 
   @override
   void dispose() {
@@ -151,7 +140,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Oppnet Chat Application"),
+            title: Text("Oppnet Chat Application"),
             backgroundColor: Colors.indigoAccent,
             centerTitle: true
         ),
@@ -218,7 +207,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
               );
             }));
   }
-
+// Connection state Implementation
   String getStateName(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
@@ -260,7 +249,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return Colors.red;
     }
   }
-    // Send/received messages among the connected devices......
+  // Send/received messages among the connected devices......
   _onTabItemListener2(Device device, NearbyService nearbyService){
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPageView( device: device,nearbyService:nearbyService)));
   }
@@ -272,13 +261,13 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
           builder: (BuildContext context) {
             final myController = TextEditingController();
             return AlertDialog(
-              title: const Text("Write  message"),
+              //title: const Text("Write  message"),
               content: TextField(controller: myController),
               actions: [
                 TextButton(
                   child: const Text("Cancel"),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    //Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
@@ -302,7 +291,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
       return devices.length;
     }
   }
-// Request connect from scanning devices.....
+// connection Request send from  Browser devices.....
   _onButtonClicked(Device device) {
     switch (device.state) {
       case SessionState.notConnected:
@@ -341,7 +330,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         deviceName: devInfo,
         strategy: Strategy.P2P_CLUSTER, // defining cluster_shaped connection topology.....
         callback: (isRunning) async {
-
+          ////////////////browsing and advertising implement
           if (isRunning) {
             if (widget.deviceType == DeviceType.browser) {
               await nearbyService.stopBrowsingForPeers();
@@ -356,6 +345,8 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
             }
           }
         });
+
+    ///Two Subscription Impolemented . 1 for device connectionstate change another is recivied data from another device
     subscription =
         nearbyService.stateChangedSubscription(callback: (devicesList) {
           for (var element in devicesList) {
@@ -379,23 +370,8 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
               print(element.deviceName);
             });
             connectedDevices.addAll(devicesList.where((d) => d.state == SessionState.connected).toList());
-          });//,_currentDevice
+          });
         });
 
-    /*devices.forEach((element) {
-       print('list of available device ${element.deviceName}');
-    });
-    connectedDevices.forEach((element) {
-      print('list of connected device ${element.deviceName}');
-    });*/
-    receivedDataSubscription =
-        nearbyService.dataReceivedSubscription(callback: (data) {
-          print("dataReceivedSubscription: ${jsonEncode(data)}");
-          showToast(jsonEncode(data),
-              context: context,
-              axis: Axis.horizontal,
-              alignment: Alignment.center,
-              position: StyledToastPosition.bottom);
-        });
   }
 }

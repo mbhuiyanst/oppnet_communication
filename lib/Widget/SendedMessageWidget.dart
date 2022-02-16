@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:oppnet_chat/Global/Colors.dart' as myColors;
-
+//Send Message allignment design......
 class SendedMessageWidget extends StatelessWidget {
   final String content;
   final String imageAddress;
   final String time;
   final bool isImage;
   const SendedMessageWidget({
-    required Key key,
+    key,
     required this.content,
     required this.time,
-    required this.imageAddress,
+    this.imageAddress="",
     required this.isImage,
   }) : super(key: key);
 

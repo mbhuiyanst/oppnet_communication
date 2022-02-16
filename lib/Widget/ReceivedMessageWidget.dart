@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:oppnet_chat/Global/Colors.dart' as MyColors;
 import 'package:oppnet_chat/Global/Settings.dart' as Settings;
 
+//Received message allignmnet design start Here.....
+
 class ReceivedMessageWidget extends StatelessWidget {
   final String content;
   final String imageAddress;
   final String time;
   final bool isImage;
   const ReceivedMessageWidget({
-    required Key key,
+    key,
     required this.content,
     required this.time,
     required this.isImage,
-    required this.imageAddress,
+    this.imageAddress="",
   }) : super(key: key);
 
   @override
