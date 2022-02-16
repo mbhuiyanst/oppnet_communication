@@ -1,4 +1,4 @@
-# oppnet_chat
+# oppnet_chat using flutter_nearby_connections
 
 A new Flutter project.
 
