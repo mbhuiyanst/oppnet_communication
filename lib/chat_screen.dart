@@ -42,7 +42,7 @@ class _ChatPageViewState extends State<ChatPageView> {
   @override
   void initState() {
     super.initState();
-// data Received Implementation.....
+// data Received Implementation for receiving  data from another device
     r = widget.nearbyService.dataReceivedSubscription(callback: (data) {
       print("dataReceivedSubscription: ${jsonEncode(data)}");
       print(data['message']);
