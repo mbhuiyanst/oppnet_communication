@@ -8,16 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nearby_connections/flutter_nearby_connections.dart';
 import 'package:oppnet_chat/chat_screen.dart';
 
-
-
-//Defining the Device Type.....
 enum DeviceType { advertiser, browser }
 
 class DevicesListScreen extends StatefulWidget {
 
-  const DevicesListScreen({required this.deviceType,Key ? key}): super(key: key);
-
-  final DeviceType deviceType;
+  const DevicesListScreen({Key ? key}): super(key: key);
 
   @override
   _DevicesListScreenState createState() => _DevicesListScreenState();
@@ -29,7 +24,6 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   List<Device> connectedDevices = []; // Store and show List of Connected devices......
   late NearbyService nearbyService;
   late StreamSubscription subscription;
-  late StreamSubscription receivedDataSubscription;
   String _currentDevice='';
 
   bool isInit = false;
@@ -38,13 +32,12 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   void initState() {
     super.initState();
     init();
-
+    //_getCurrentDevice();
   }
 
   @override
   void dispose() {
     subscription.cancel();
-    receivedDataSubscription.cancel();
     nearbyService.stopBrowsingForPeers(); // Stop scanning for peers......
     nearbyService.stopAdvertisingPeer();   //Stop advertising for peers.....
     super.dispose();
@@ -62,10 +55,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         body: ListView.builder(
             itemCount: getItemCount(),
             itemBuilder: (context, index) {
-              final device = widget.deviceType == DeviceType.advertiser
-                  ? connectedDevices[index]
-                  :  devices[index];
-
+              final device = devices[index];
               return Container(
                 margin: const EdgeInsets.all(8.0),
                 child: Column(
@@ -73,8 +63,9 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                     Row(
                       children: [
                         Expanded(
+                          // Tab on connected device
                             child: GestureDetector(
-                              onTap: () => _onTabItemListener2(device,nearbyService),
+                              onTap: () => _onTabItemListener2(device,nearbyService), // open chat screen
                               child: Column(
                                 children: [
                                   Text(device.deviceName),
@@ -86,27 +77,37 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),
-                            )),
-
-
-                        GestureDetector(
-                          onTap: () => _onButtonClicked(device),
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                            padding: const EdgeInsets.all(8.0),
-                            height: 35,
-                            width: 100,
-                            color: getButtonColor(device.state),
-                            child: Center(
-                              child: Text(
-                                getButtonStateName(device.state),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        )
+                            )
+                        ),
+                        //Tap on connect button
+                        SizedBox(
+                            height: 45,
+                            width: 110,
+                            child: TextButton(
+                                onPressed: (){
+                                  _onButtonClicked(device);
+                                },
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)),
+                                    foregroundColor: MaterialStateProperty.all<Color>(getButtonColor(device.state)),
+                                    backgroundColor: MaterialStateProperty.all<Color>(getButtonColor(device.state)),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(25.0),
+                                            side: BorderSide(color: getButtonColor(device.state))
+                                        )
+                                    )
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    getButtonStateName(device.state),
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                )
+                            )
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -121,7 +122,8 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
               );
             }));
   }
-// Connection state Implementation
+
+  // get current state name
   String getStateName(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
@@ -163,49 +165,15 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return Colors.red;
     }
   }
-  // Send/received messages among the connected devices......
+  //Open chat Screen Method
   _onTabItemListener2(Device device, NearbyService nearbyService){
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPageView( device: device,nearbyService:nearbyService)));
   }
 
-  _onTabItemListener(Device device) {
-    if (device.state == SessionState.connected) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            final myController = TextEditingController();
-            return AlertDialog(
-              //title: const Text("Write  message"),
-              content: TextField(controller: myController),
-              actions: [
-                TextButton(
-                  child: const Text("Cancel"),
-                  onPressed: () {
-                    //Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text("Send"),
-                  onPressed: () {
-                    nearbyService.sendMessage(
-                        device.deviceId, myController.text +device.deviceName);
-                    myController.text = '';
-                  },
-                )
-              ],
-            );
-          });
-    }
-  }
-
   int getItemCount() {
-    if (widget.deviceType == DeviceType.advertiser) {
-      return connectedDevices.length;
-    } else {
-      return devices.length;
-    }
+    return devices.length;
   }
-// connection Request send from  Browser devices.....
+// Request connect from scanning devices.....
   _onButtonClicked(Device device) {
     switch (device.state) {
       case SessionState.notConnected:
@@ -227,9 +195,9 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
     String devInfo = '';
     // ios and android device identification with required  information
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-
       devInfo = androidInfo.model;
       _currentDevice=devInfo;
     }
@@ -239,33 +207,27 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
       _currentDevice=devInfo;
     }
 
+    //Initialize nearby Sevice package
     await nearbyService.init(
         serviceType: 'mpconn',
         deviceName: devInfo,
         strategy: Strategy.P2P_CLUSTER, // defining cluster_shaped connection topology.....
         callback: (isRunning) async {
           ////////////////browsing and advertising implement
-          if (isRunning) {
-            if (widget.deviceType == DeviceType.browser) {
-              await nearbyService.stopBrowsingForPeers();
-              await Future.delayed(const Duration(microseconds: 200));
-              await nearbyService.startBrowsingForPeers();
-            } else {
-              await nearbyService.stopAdvertisingPeer();
-              await nearbyService.stopBrowsingForPeers();
-              await Future.delayed(const Duration(microseconds: 200));
-              await nearbyService.startAdvertisingPeer();
-              await nearbyService.startBrowsingForPeers();
-            }
+          if(isRunning){
+            await nearbyService.stopAdvertisingPeer();
+            await nearbyService.stopBrowsingForPeers();
+            await Future.delayed(const Duration(microseconds: 200));
+            nearbyService.startAdvertisingPeer();
+            nearbyService.startBrowsingForPeers();
           }
         });
 
-    /// Subscription Implemented for showing device connection state change
+    ///Subscription for device connectionstate
     subscription =
         nearbyService.stateChangedSubscription(callback: (devicesList) {
           for (var element in devicesList) {
             print(" deviceId: ${element.deviceId} | deviceName: ${element.deviceName} | state: ${element.state}") ;
-
             if (Platform.isAndroid) {
               if (element.state == SessionState.connected) {
                 nearbyService.stopBrowsingForPeers();
@@ -274,7 +236,6 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
               }
             }
           }
-
           setState(() {
             devices.clear();
             devices.addAll(devicesList);
@@ -284,8 +245,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
               print(element.deviceName);
             });
             connectedDevices.addAll(devicesList.where((d) => d.state == SessionState.connected).toList());
-          });
+          });//,_currentDevice
         });
-
   }
 }

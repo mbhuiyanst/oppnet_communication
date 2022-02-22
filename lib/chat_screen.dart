@@ -12,13 +12,12 @@ import 'package:flutter_nearby_connections/flutter_nearby_connections.dart';
 import 'package:oppnet_chat/models/message.dart';
 
 
-
 class ChatPageView extends StatefulWidget {
 
   const ChatPageView({required this.device,required this.nearbyService,});
   final Device device;
   final NearbyService nearbyService;
-
+  final String add = "riad";
 
   @override
   _ChatPageViewState createState() => _ChatPageViewState();
@@ -42,16 +41,8 @@ class _ChatPageViewState extends State<ChatPageView> {
   @override
   void initState() {
     super.initState();
-// data Received Implementation for receiving  data from another device
     r = widget.nearbyService.dataReceivedSubscription(callback: (data) {
-      print("dataReceivedSubscription: ${jsonEncode(data)}");
-      print(data['message']);
       _chatMessages.add(MessageModel(sent: false, toId: "", fromId: "", message:  data['message'].toString(), dateTime: DateTime.now()));
-      showToast(jsonEncode(data),
-          context: context,
-          axis: Axis.horizontal,
-          alignment: Alignment.center,
-          position: StyledToastPosition.bottom);
     });
   }
 

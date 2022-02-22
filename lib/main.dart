@@ -9,6 +9,7 @@ import 'package:oppnet_chat/chat_screen.dart';
 import 'package:oppnet_chat/route.dart';
 import 'models/attached_device.dart';
 import 'models/devicelist_screen.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -19,15 +20,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       onGenerateRoute: generateRoute,
       initialRoute: '/',
     );
   }
 }
 //Routing the application pages........
-
-
-
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -36,47 +35,39 @@ class Home extends StatelessWidget {
 
     // Showing application home page..............
     return Scaffold(
-      appBar: AppBar(
-          title: Text("Oppnet Chat Application"),
-          backgroundColor: Colors.indigoAccent,
-          centerTitle: true
+        appBar: AppBar(
+            title: Text("Oppnet Chat Application"),
+            backgroundColor: Colors.indigoAccent,
+            centerTitle: true
 
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DevicesListScreen(deviceType: DeviceType.browser)));
-              },
-              child: Container(
-                color: Colors.red,
-                child: const Center(
-                    child: Text(
-                      'Browsing',
-                      style: TextStyle(color: Colors.white, fontSize: 40),
-                    )),
-              ),
+        ),
+        body:
+        Padding(
+            padding: EdgeInsets.only(
+                left:  MediaQuery.of(context).size.width * 0.17,
+                top: MediaQuery.of(context).size.height * 0.25
             ),
-          ),
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DevicesListScreen(deviceType: DeviceType.advertiser)));
-              },
-              child: Container(
-                color: Colors.green,
-                child: const Center(
-                    child: Text(
-                      'Advertising',
-                      style: TextStyle(color: Colors.white, fontSize: 40),
-                    )),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(140),
+              child: SizedBox(
+                width: 240,
+                height: 240,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(primary: Colors.indigoAccent),
+                  icon: const Icon(
+                    Icons.search_rounded,
+                    size: 30,
+                  ),
+                  label: const Text(
+                    'Search Devices',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  onPressed: () { Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DevicesListScreen())); },
+                ),
               ),
-            ),
-          ),
-        ],
-      ),
+            )
+        )
+
     );
   }
 }
-
