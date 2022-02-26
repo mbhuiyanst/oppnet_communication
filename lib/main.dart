@@ -10,6 +10,9 @@ import 'package:oppnet_chat/route.dart';
 import 'models/attached_device.dart';
 import 'models/devicelist_screen.dart';
 
+
+
+/// Flutter Home Page
 void main() {
   runApp(const MyApp());
 }
@@ -22,18 +25,21 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: generateRoute,
+
+      ///calling to Route page
       initialRoute: '/',
+
     );
   }
 }
-//Routing the application pages........
+
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
-    // Showing application home page..............
+    /// Showing application home page..............
     return Scaffold(
         appBar: AppBar(
             title: Text("Oppnet Chat Application"),
@@ -60,8 +66,12 @@ class Home extends StatelessWidget {
                   ),
                   label: const Text(
                     'Search Devices',
+
+
+
                     style: TextStyle(fontSize: 25),
                   ),
+                  /// On pressed on Search Devices , Material Page route to DeviceListScreen()
                   onPressed: () { Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DevicesListScreen())); },
                 ),
               ),

@@ -41,6 +41,8 @@ class _ChatPageViewState extends State<ChatPageView> {
   @override
   void initState() {
     super.initState();
+    /// The [dataReceivedSubscription] helps user listen when a peer sends text messages
+
     r = widget.nearbyService.dataReceivedSubscription(callback: (data) {
       _chatMessages.add(MessageModel(sent: false, toId: "", fromId: "", message:  data['message'].toString(), dateTime: DateTime.now()));
     });
@@ -172,6 +174,7 @@ class _ChatPageViewState extends State<ChatPageView> {
                               IconButton(
                                 icon: Icon(Icons.send),
                                 onPressed: () {
+                                  /// Sends a message encapsulated in a Data instance to nearby peers.
                                   widget.nearbyService.sendMessage(
                                       widget.device.deviceId, _text.text);
                                   _chatMessages.add(MessageModel(sent: true, toId: "", fromId: "", message:  _text.text, dateTime: DateTime.now()));
