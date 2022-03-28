@@ -20,23 +20,21 @@ class DevicesListScreen extends StatefulWidget {
 
 class _DevicesListScreenState extends State<DevicesListScreen> {
 
-  List<Device> devices = []; /// A List is made of all the devices which are found in a device
-  List<Device> connectedDevices = []; /// A List is made of all the devices which are connected.
+  List<Device> devices = []; // Store and show list of available advertised devices....
+  List<Device> connectedDevices = []; // Store and show List of Connected devices......
   late NearbyService nearbyService;
   late StreamSubscription subscription;
   String _currentDevice='';
 
   bool isInit = false;
 
-  /// Start  Initializing
   @override
-
   void initState() {
     super.initState();
     init();
     //_getCurrentDevice();
   }
-   ///Shutdown the the search
+
   @override
   void dispose() {
     subscription.cancel();
@@ -125,7 +123,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
             }));
   }
 
-  /// get current state name
+  // get current state name
   String getStateName(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
@@ -136,7 +134,6 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return "connected";
     }
   }
-  /// get current Button state name
 
   String getButtonStateName(SessionState state) {
     switch (state) {
@@ -147,7 +144,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return "Disconnect";
     }
   }
- /// Change the state of the Button color
+
   Color getStateColor(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
@@ -158,7 +155,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return Colors.green;
     }
   }
-/// Change the  color of the Button
+
   Color getButtonColor(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
@@ -168,7 +165,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return Colors.red;
     }
   }
-  ///Open chat Screen Method
+  //Open chat Screen Method
   _onTabItemListener2(Device device, NearbyService nearbyService){
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPageView( device: device,nearbyService:nearbyService)));
   }
@@ -176,7 +173,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   int getItemCount() {
     return devices.length;
   }
-/// Connection Request from any of the devices.....
+// Request connect from scanning devices.....
   _onButtonClicked(Device device) {
     switch (device.state) {
       case SessionState.notConnected:
@@ -185,68 +182,48 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
           deviceName: _currentDevice,
         );
         break;
-    ///If connected make a disconnection
       case SessionState.connected:
         nearbyService.disconnectPeer(deviceID: device.deviceId);
         break;
-    ///If it's during a connection ignore it
       case SessionState.connecting:
         break;
     }
   }
-
-  ///Check for Android or IOS
+  // ios and android device identification with required  information
   void init() async {
     nearbyService = NearbyService();
     String devInfo = '';
-
+    // ios and android device identification with required  information
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
-    /// If this is android then this will be executed
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       devInfo = androidInfo.model;
       _currentDevice=devInfo;
     }
-    ///If this is run on IOS, then this will be executed
     if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       devInfo = iosInfo.localizedModel;
       _currentDevice=devInfo;
     }
 
-    ///Initialize nearby Service package
+    //Initialize nearby Sevice package
     await nearbyService.init(
         serviceType: 'mpconn',
         deviceName: devInfo,
         strategy: Strategy.P2P_CLUSTER, // defining cluster_shaped connection topology.....
         callback: (isRunning) async {
-
-          ////////////////browsing and advertising implement///////////////
+          ////////////////browsing and advertising implement
           if(isRunning){
-            /// Stops advertising this peer device for connection.
             await nearbyService.stopAdvertisingPeer();
-            /// Stops browsing for peers.
             await nearbyService.stopBrowsingForPeers();
-
             await Future.delayed(const Duration(microseconds: 200));
-            /// Begins advertising the service provided by a local peer.
-            /// The [startAdvertisingPeer] publishes an advertisement for a specific service
-            /// that your app provides through the flutter_nearby_connections plugin and
-            /// notifies its delegate about invitations from nearby peers.
             nearbyService.startAdvertisingPeer();
-
-            // Starts browsing for peers.
-            /// Searches (by [serviceType]) for services offered by nearby devices using
-            /// infrastructure Wi-Fi, peer-to-peer Wi-Fi, and Bluetooth or Ethernet, and
-            /// provides the ability to easily invite those [Device] to a earby connections session
             nearbyService.startBrowsingForPeers();
           }
         });
 
-    ///[stateChangedSubscription] helps listen to the changes of peers with
-    /// the circumstances: find a new peer, a peer is invited, a peer is disconnected,
-    /// a peer is invited to connect by another peer, or 2 peers are connected.
+    ///Subscription for device connectionstate
     subscription =
         nearbyService.stateChangedSubscription(callback: (devicesList) {
           for (var element in devicesList) {

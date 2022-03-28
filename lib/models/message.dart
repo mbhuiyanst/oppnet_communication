@@ -10,7 +10,7 @@ class MessageModel {
   MessageModel(
       {required this.sent,
         required this.toId,
-       // required this.toUsername,
+        // required this.toUsername,
         required this.fromId,
         // required this.fromUsername,
         required this.message,

@@ -6,9 +6,6 @@ import 'package:oppnet_chat/chat_screen.dart';
 import 'package:oppnet_chat/models/devicelist_screen.dart';
 
 
-/// Application routing is handled here....................
-
-
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/':
