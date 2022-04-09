@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oppnet_chat/Global/Colors.dart' as myColors;
+
 //Send Message allignment design......
 class SendedMessageWidget extends StatelessWidget {
   final String content;
