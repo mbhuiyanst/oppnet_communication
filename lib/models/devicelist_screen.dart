@@ -19,7 +19,7 @@ class DevicesListScreen extends StatefulWidget {
 }
 
 class _DevicesListScreenState extends State<DevicesListScreen> {
-
+///Declared Variables for later use
   List<Device> devices = []; /// Store and show list of available advertised devices....
   List<Device> connectedDevices = []; /// Store and show List of Connected devices......
   late NearbyService nearbyService;
@@ -29,12 +29,13 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   bool isInit = false;
 
   @override
+  ///start Initialization
   void initState() {
     super.initState();
     init();
     //_getCurrentDevice();
   }
-
+/// Stop searching
   @override
   void dispose() {
     subscription.cancel();
@@ -65,7 +66,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                         Expanded(
                           /// Tab on connected device
                             child: GestureDetector(
-                              onTap: () => _onTabItemListener2(device,nearbyService), // open chat screen
+                              onTap: () => _onTabItemListener2(device,nearbyService), /// open chat screen
                               child: Column(
                                 children: [
                                   Text(device.deviceName),
@@ -79,7 +80,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                               ),
                             )
                         ),
-                        //Tap on connect button
+                        ///Tap on connect button
                         SizedBox(
                             height: 45,
                             width: 110,
@@ -123,7 +124,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
             }));
   }
 
-  // get current state name
+  /// get current state name and give the state if device connected, is waiting or or disconnected.
   String getStateName(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
@@ -144,7 +145,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return "Disconnect";
     }
   }
-
+///Chnages the state of the Button colors not connected,connecting and disconnecting.
   Color getStateColor(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
@@ -165,7 +166,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return Colors.red;
     }
   }
-  ///Open chat Screen Method
+  /// device selection handler and Opening chat Screen Method
   _onTabItemListener2(Device device, NearbyService nearbyService){
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPageView( device: device,nearbyService:nearbyService)));
   }
