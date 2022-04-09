@@ -20,8 +20,8 @@ class DevicesListScreen extends StatefulWidget {
 
 class _DevicesListScreenState extends State<DevicesListScreen> {
 
-  List<Device> devices = []; // Store and show list of available advertised devices....
-  List<Device> connectedDevices = []; // Store and show List of Connected devices......
+  List<Device> devices = []; /// Store and show list of available advertised devices....
+  List<Device> connectedDevices = []; /// Store and show List of Connected devices......
   late NearbyService nearbyService;
   late StreamSubscription subscription;
   String _currentDevice='';
@@ -63,7 +63,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                     Row(
                       children: [
                         Expanded(
-                          // Tab on connected device
+                          /// Tab on connected device
                             child: GestureDetector(
                               onTap: () => _onTabItemListener2(device,nearbyService), // open chat screen
                               child: Column(
@@ -165,7 +165,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         return Colors.red;
     }
   }
-  //Open chat Screen Method
+  ///Open chat Screen Method
   _onTabItemListener2(Device device, NearbyService nearbyService){
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPageView( device: device,nearbyService:nearbyService)));
   }
@@ -173,7 +173,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   int getItemCount() {
     return devices.length;
   }
-// Request connect from scanning devices.....
+///Request connect from scanning devices.....
   _onButtonClicked(Device device) {
     switch (device.state) {
       case SessionState.notConnected:
@@ -189,11 +189,11 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         break;
     }
   }
-  // ios and android device identification with required  information
+  /// ios and android device identification with required  information
   void init() async {
     nearbyService = NearbyService();
     String devInfo = '';
-    // ios and android device identification with required  information
+    /// ios and android device identification with required  information
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     if (Platform.isAndroid) {
@@ -207,7 +207,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
       _currentDevice=devInfo;
     }
 
-    //Initialize nearby Sevice package
+    ///Initialize nearby Service package
     await nearbyService.init(
         serviceType: 'mpconn',
         deviceName: devInfo,

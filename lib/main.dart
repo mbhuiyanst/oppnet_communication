@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//Routing the application pages........
+
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 

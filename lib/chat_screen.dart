@@ -8,6 +8,10 @@ import 'package:oppnet_chat/Widget/ReceivedMessageWidget.dart';
 import 'package:oppnet_chat/Widget/SendedMessageWidget.dart';
 import 'package:oppnet_chat/models/message.dart';
 
+
+
+
+/// Chat Page Implementation start here
 class ChatPageView extends StatefulWidget {
   const ChatPageView({
     required this.device,
@@ -16,7 +20,6 @@ class ChatPageView extends StatefulWidget {
 
   final Device device;
   final NearbyService nearbyService;
-  //final String add = "riad";
 
   @override
   _ChatPageViewState createState() => _ChatPageViewState();
@@ -27,7 +30,7 @@ class _ChatPageViewState extends State<ChatPageView> {
   final ScrollController _scrollController = ScrollController();
   var childList = <Widget>[];
 
-  List<MessageModel> messages = []; //as Stream<List<MessageModel>>;
+  List<MessageModel> messages = [];
   final List<MessageModel> _chatMessages = [];
 
   Stream<List<MessageModel>> _chat() async* {
@@ -116,18 +119,16 @@ class _ChatPageViewState extends State<ChatPageView> {
                           fit: BoxFit.cover,
                           colorFilter: Settings.isDarkMode
                               ? const ColorFilter.mode(Colors.white,
-                                  BlendMode.hardLight) //COLOR white SSSS
+                                  BlendMode.hardLight)
                               : const ColorFilter.linearToSrgbGamma()),
                     ),
                     child: SingleChildScrollView(
                         controller: _scrollController,
-                        // reverse: true,
                         child: Column(
                           //crossAxisAlignment: CrossAxisAlignment.start,
                           //mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            //Text("Hello"),
-                            //Text("Second value"),
+
                             StreamBuilder(
                                 stream: _chat(),
                                 builder: (context,
@@ -138,13 +139,14 @@ class _ChatPageViewState extends State<ChatPageView> {
                                       physics:
                                           const NeverScrollableScrollPhysics(),
 
-                                      ///Scroling
+                                      ///Scroling the all text messages
                                       shrinkWrap: true,
                                       key: UniqueKey(),
                                       itemCount: snapshot.data!.length,
                                       itemBuilder: (context, index) {
                                         final chatItem = snapshot.data![index];
                                         return chatItem.sent
+                                        ///showing send messages on the chat screen
                                             ? SendedMessageWidget(
                                                 content: chatItem.message,
                                                 time: DateFormat(
@@ -152,6 +154,7 @@ class _ChatPageViewState extends State<ChatPageView> {
                                                     .format(chatItem.dateTime)
                                                     .toString(),
                                                 isImage: false)
+                                        /// Showing Received Message on Chat Screen
                                             : ReceivedMessageWidget(
                                                 content: chatItem.message,
                                                 time: DateFormat(
