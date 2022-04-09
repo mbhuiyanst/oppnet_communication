@@ -1,6 +1,10 @@
-# oppnet_chat using flutter_nearby_connections
+# oppnet Communication chat Application using flutter_nearby_connections
 
-A new Flutter project that used flutter_nearby_connections API to build Chat application using Bluetooth.
+Plugin: https://pub.dev/packages/flutter_nearby_connections
+
+A new Flutter project that used flutter_nearby_connections API to build Chat application using Bluetooth.With this
+application, it is possible to connect multiple devices and sending/receiving text messages possible with in Bluetooth range
+and also possible to chat by connecting to wifi or mobile networks.
 This project is the extension of the existing development example code but with added some features and resolving some 
 limitations.
 
